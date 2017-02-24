@@ -1,0 +1,27 @@
+{% extends 'index.html' %}
+
+{% block title %}分组管理{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：分组管理 >> 联系人分组 </div>
+<h3>联系人分组</h3>
+说明：
+联系人用逗号分割，sa组只能修改不能删除
+<form class="form-inline" action="" method="post" style="margin-bottom:0;">
+联系人组名:<input type="text" name='groupname' class="input-small" placeholder="输入联系人组名">
+组联系人:<input type="text" name='contact' class="span3" placeholder="输入联系人，逗号分开">
+<button type="submit" name='add' class="btn">添加联系人组</button>
+{% if msg %}<font color='red'>{{ msg }}</font>{% endif %}
+</form>
+<table class="table">
+<th>组名</th><th>联系人</th><th>时间</th><th>操作</th>
+{% for ret in rets %}
+<tr>
+    <td>{{ret.name}}</td>
+    <td>{{ret.contact}}</td>
+    <td>{{ret.nowtime}}</td>
+    <td><a href="?name={{ ret.name }}&&edit=1" title="edit"><i class="icon-edit"></i></a> {% ifnotequal ret.name 'sa' %}<a href="?name={{ ret.name }}&&delete=1" title="delete"><i class="icon-trash"></i></a>{% endifnotequal %}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

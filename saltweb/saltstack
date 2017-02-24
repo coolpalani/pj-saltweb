@@ -1,0 +1,89 @@
+saltstack集中管理crontab定时任务、系统用户、文件同步
+
+[root@mod ]# vim /etc/salt/master 在最后添加以下内容 
+file_roots:
+  base:
+    - /srv/salt
+pillar_roots: 
+  base: 
+    - /srv/pillar
+[root@mod ]# mkdir /srv/pillar
+[root@mod ]# mkdir /srv/salt
+[root@mod ]# mkdir /srv/salt/files
+[root@mod ]# cat /srv/pillar/top.sls
+base:
+   '*':
+       - schedule
+[root@mod salt]# cat /srv/pillar/schedule.sls 
+schedule:
+    highstate:
+       function: state.highstate
+       minutes: 2
+[root@mod pillar]# salt '*' saltutil.refresh_pillar  #注意：每次修改pillar中的变量或参数都需要执行同步pillar命令
+[root@mod pillar]#  cat /srv/salt/top.sls
+base:
+    '*':
+      - cron
+#      - user
+#      - files
+#    'group1':
+#      - match: nodegroup
+#      - user
+[root@mod pillar]#  cat /srv/salt/cron.sls
+add_cron:
+    cron.present:
+        - name: "/usr/sbin/ntpdate tiger.sina.com.cn >/dev/null 2>&1"
+        - user: root
+        - minute: '*/10'
+#del_cron:
+#    cron.absent:
+#        - name: "/usr/sbin/ntpdate tiger.sina.com.cn >/dev/null 2>&1"
+#        - user: hhr
+[root@mod pillar]#  cat /srv/salt/user.sls     
+huanghuirong:
+  user.present:
+    - password: '$1$HtvZo6N2$gMik5ejbJEH6DoUzhXpKz1'
+    - shell: /bin/bash
+    - home: /home/huanghuirong
+
+#huanghuirong1:
+#  user.absent
+
+sudo_open:
+    cmd.run:
+        - name: "chattr -i /etc/sudoers"
+        - cwd: /
+        - user: root
+sudo_adduser:
+    file.append:
+        - name: /etc/sudoers
+        - text:
+            - "huanghuirong ALL=(ALL)       NOPASSWD: ALL"
+        - require:
+            - cmd: sudo_open
+sudo_deluser:
+    file.comment:
+        - name: /etc/sudoers
+        - regex: ^huanghuirong1 ALL
+        - require:
+            - cmd: sudo_open
+sudo_close:
+    cmd.run:
+        - name: "chattr +i /etc/sudoers"
+        - cwd: /
+        - user: root
+        - order: 1
+        - require:
+            - file: /etc/sudoers
+
+[root@mod salt]# cat /srv/salt/files.sls
+files:
+    file.managed:
+        - name: /tmp/t.txt
+        - source: salt://files/t.txt
+        - mode: 644
+        - owner: root
+        - group: root
+
+[root@mod files]# ls /srv/salt/files/t.txt
+/srv/salt/files/t.txt

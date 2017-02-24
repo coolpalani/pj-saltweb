@@ -1,13 +1,4 @@
-# saltstack UI管理工具 
-
-##部署环境说明
-Centos 6.X<br>
-Django 1.6.x<br>
-Salt-master 2014.1.0-1<br>
-Python 2.6.6<br>
-
-###部署
-```text
+###saltweb部署
 #时区及时间同步
 /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 echo "*/5 * * * * root /usr/sbin/ntpdate tiger.sina.com.cn >/dev/null 2>&1">>/var/spool/cron/root
@@ -69,6 +60,4 @@ python /root/saltweb/saltweb/salt_service.py status
 修改本机host，添加"172.16.1.237 www.saltweb.com",访问http://www.saltweb.com/salt
 
 ###saltstack集中管理crontab定时任务、系统用户、文件同步管理（可选）
-```
-
-
+请参考当前目录下saltstack的配置步骤

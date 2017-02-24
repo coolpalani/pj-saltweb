@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+
+{% block title %}页面监控{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：监控 >> 页面监控  </div>
+<h3>添加监控</h3>
+说明：url地址必须以http://开头，加新的项目会马上监控返回其结果<br>
+<form class="form-inline" action="" method="post" style="margin-bottom:0;">
+工程名:<input type="text" name='proname' class="input-small" placeholder="输入工程名">
+IP地址:<input type="text" name='ip' class="input-small" placeholder="输入ip地址">
+端口号:<input type="text" name='port' class="input-small"placeholder="输入端口号">
+URL:<input type="text" name='urlname' class="span3" placeholder="输入url">
+联系人组:<select name="contact" class="input-small">
+{% for contact in contacts %}
+<option>{{ contact }}</option>
+{% endfor %}
+</select>
+<button type="submit" name='add' class="btn">添加监控</button><br>
+{% if msg %}<font color='red'>{{ msg }}</font>{% endif %}
+<h3>页面监控</h3>
+说明：服务器每隔5分钟会自动监控所有项目，查看最新监控结果请刷新页面<br> 
+<input type="text" name='searchproname' class="input-small" placeholder="工程名">
+<button type="submit" name='search' class="btn">搜索</button>
+</form>
+<table class="table">
+<th>工程名</th><th>域名</th><th>IP地址</th><th>端口</th><th>Url地址</th><th>联系人组</th><th>最后监控时间</th><th>监控结果</th><th>报警状态</th><th><a href="?updateall=1">全部刷新</a> <a href="?allclosemail=1">全部关闭</a> <a href="?allclosemail=0">全部开启</a> </th>
+{% for ret in rets %}
+{% ifequal ret.status '200' %}<tr class="alert-success">{% else %}<tr class="alert-danger">{% endifequal %}
+    <td>{{ret.proname}}</td>
+    <td>{{ret.domainname}}</td>
+    <td>{{ret.ip}}</td>
+    <td>{{ret.port}}</td>
+    <td>{{ret.urlname}}</td>
+    <td>{{ret.contact}}</td>
+    <td>{{ret.nowtime}}</td>
+    <td>{{ret.status}}</td>
+    <td>{% ifequal ret.closemail 0 %}开启{% else %}关闭{% endifequal %}</td>
+    <td><a href="?id={{ ret.id }}&&urlupdate=1">刷新</a> | <a href="?id={{ ret.id }}&&closemail=1">关闭监控</a> | <a href="?id={{ ret.id }}&&closemail=0">开启监控</a> | <a href="?id={{ ret.id }}&&urldel=1">删除</a></td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

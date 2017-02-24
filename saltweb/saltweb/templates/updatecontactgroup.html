@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+
+{% block title %}分组管理{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：分组管理 >> 联系人管理 </div>
+<h3>主机分组</h3>
+说明：联系人邮箱以逗号分开<br><br>
+<form class="form-inline" action="" method="post" style="margin-bottom:0;">
+组名: {{ret.name}}<br>
+组联系人:<input type="text" name='contact' class="span5" value="{{ret.contact}}">
+<button type="submit" name='edit' class="btn">修改分组</button>
+{% if msg %}<font color='red'>{{ msg }}</font>{% endif %}
+</form>
+{% endblock %}

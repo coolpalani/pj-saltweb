@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+
+{% block title %}分组管理{% endblock %}
+
+{% block page-content %}
+<div class="location_div">位置：分组管理 >> 主机分组 </div>
+<h3>主机分组</h3>
+说明：主机saltid以逗号分开<br><br>
+<form class="form-inline" action="" method="post" style="margin-bottom:0;">
+组名: {{ret.name}}<br>
+主机saltid:<input type="text" name='hosts' class="span3" value="{{ret.hosts}}">
+<button type="submit" name='edit' class="btn">修改分组</button>
+{% if msg %}<font color='red'>{{ msg }}</font>{% endif %}
+</form>
+{% endblock %}
